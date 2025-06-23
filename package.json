@@ -1,0 +1,25 @@
+{
+  "name": "chat-notes-app",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@google/generative-ai": "^0.24.1",
+    "axios": "^1.10.0",
+    "bcrypt": "^6.0.0",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "express-session": "^1.18.1",
+    "mongoose": "^8.16.0",
+    "multer": "^2.0.1",
+    "openai": "^5.7.0",
+    "pdf-parse": "^1.1.1",
+    "pdfkit": "^0.17.1"
+  },
+  "description": ""
+}

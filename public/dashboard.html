@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard | Chat with Notes</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="auth-body">
+  <div class="dashboard-container">
+    <h2>📄 Chat with Your Notes</h2>
+    <p class="auth-subtitle">Upload a PDF and explore powerful tools for study assistance.</p>
+
+    <!-- Success Message -->
+    <div id="upload-msg" class="success-msg"></div>
+
+    <!-- Upload Form -->
+    <form action="/upload" method="POST" enctype="multipart/form-data" class="dashboard-form">
+      <label class="form-label">Upload PDF</label>
+      <input type="file" name="pdf" accept=".pdf" required />
+      <button type="submit">Upload</button>
+    </form>
+
+    <!-- Ask Question -->
+    <form id="askForm" class="dashboard-form">
+      <label class="form-label">Ask a Question</label>
+      <input name="question" placeholder="Type your question here..." required />
+      <button type="submit">Ask</button>
+    </form>
+
+    <!-- Extra Tools -->
+    <div class="dashboard-form">
+      <button id="summarizeBtn">📚 Summarize PDF</button>
+      <button id="quizBtn">📝 Generate Quiz</button>
+      <button id="downloadQuizBtn">📥 Download Quiz PDF</button>
+      <button id="flashcardBtn">🧠 Generate Flashcards</button>
+    </div>
+
+    <!-- Response Box -->
+    <div id="response" class="response-box"></div>
+
+    <!-- Logout -->
+    <a href="/logout" class="logout-btn">🚪 Logout</a>
+  </div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('uploaded') === 'success') {
+      fetch('/pdf-name')
+        .then(res => res.text())
+        .then(name => {
+          document.getElementById("upload-msg").innerHTML =
+            `✅ PDF uploaded successfully: <strong>${name}</strong>`;
+        })
+        .catch(() => {
+          document.getElementById("upload-msg").innerText = "✅ PDF uploaded successfully";
+        });
+    }
+
+    // Ask Question
+    document.getElementById("askForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      document.getElementById("response").innerText = "⏳ Getting answer...";
+      const res = await fetch("/ask", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({ question: e.target.question.value })
+      });
+      const text = await res.text();
+      document.getElementById("response").innerText = text;
+    });
+
+    // Summarize PDF
+    document.getElementById("summarizeBtn").addEventListener("click", async () => {
+      document.getElementById("response").innerText = "🔄 Summarizing PDF...";
+      const res = await fetch("/summarize", { method: "POST" });
+      const text = await res.text();
+      document.getElementById("response").innerText = text;
+    });
+
+    // Generate Quiz
+    document.getElementById("quizBtn").addEventListener("click", async () => {
+      document.getElementById("response").innerText = "🔄 Generating quiz...";
+      const res = await fetch("/generate-quiz", { method: "POST" });
+      const text = await res.text();
+      document.getElementById("response").innerText = text;
+    });
+
+    // Download Quiz
+    document.getElementById("downloadQuizBtn").addEventListener("click", () => {
+      window.open("/download-quiz", "_blank");
+    });
+
+    // Generate Flashcards
+    document.getElementById("flashcardBtn").addEventListener("click", async () => {
+      document.getElementById("response").innerText = "🔄 Generating flashcards...";
+      const res = await fetch("/flashcards", { method: "POST" });
+      const text = await res.text();
+      document.getElementById("response").innerText = text;
+    });
+  </script>
+</body>
+</html>
